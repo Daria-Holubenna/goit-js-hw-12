@@ -10,7 +10,9 @@ const galleryList = document.querySelector('.gallery');
 
 export default function createGallery(images) {
     // Ця функція повинна приймати масив images, створювати HTML - розмітку для галереї, додавати її в контейнер галереї та викликати метод екземпляра SimpleLightbox refresh().Нічого не повертає.
-  const markup = images
+
+    const markup = images
+    console.log(images)
     .map(image => {
        const keysToShow = ['likes', 'views', 'comments', 'downloads'];
        const infoMarkup = keysToShow

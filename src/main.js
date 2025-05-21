@@ -8,34 +8,43 @@ const inputSearch = document.querySelector('input[name="search-text"]');
 const btnSubmit = document.querySelector('button[type="submit"]');
 const gallery = document.querySelector('.gallery');
 
-document.addEventListener('DOMContentLoaded', ()=> {
-    validateInput();
+document.addEventListener('DOMContentLoaded', () => {
+  validateInput();
 });
 
-formData.addEventListener('submit', ev => {
-    ev.preventDefault();
-    if (validateInput()) {
-        getImagesByQuery(inputSearch.value);
-        console.log(inputSearch.value);
-// createGallery(data);
-    } else {
-        return iziToast.error({
-            title: 'Поле не може бути порожнім',
-            message: 'Будь ласка, введіть текст для пошуку.',
-            position: 'topRight',
-            timeout: 2000,
-        });
+ formData.addEventListener('submit', async ev => {
+  ev.preventDefault();
+  if (validateInput()) {
+      const queryValue = await getImagesByQuery(inputSearch.value.trim());
+      console.log(queryValue)
+      try {
+        //   const images = queryValue;
+          createGallery(queryValue);
     }
+    catch (error) {
+        console.log('new error in main:', error)
+      }
+     
+  } else {
+    return iziToast.error({
+      title: 'Поле не може бути порожнім',
+      message: 'Будь ласка, введіть текст для пошуку.',
+      position: 'topRight',
+      timeout: 2000,
+    });
+     }
+
+
 });
 
 inputSearch.addEventListener('input', validateInput);
 
 function validateInput() {
-    if (inputSearch.value.trim() !== '') {
-        btnSubmit.disabled = false;
-        return true;
-    } else {
-        btnSubmit.disabled = true;
-        return false;
-    }
+  if (inputSearch.value.trim() !== '') {
+    btnSubmit.disabled = false;
+    return true;
+  } else {
+    btnSubmit.disabled = true;
+    return false;
+  }
 }
