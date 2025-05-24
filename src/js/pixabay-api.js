@@ -2,8 +2,6 @@ import axios from 'axios';
 
 axios.defaults.baseURL = 'https://pixabay.com/api/';
 
-
-
 export default async function getImagesByQuery(query, page = 1) {
   try {
     const response = await axios.get('', {
@@ -19,8 +17,7 @@ export default async function getImagesByQuery(query, page = 1) {
     });
     return response.data;
   } catch (error) {
-     console.error('API Error:', error);
+    console.error('API Error:', error);
     throw error;
   }
 }
-

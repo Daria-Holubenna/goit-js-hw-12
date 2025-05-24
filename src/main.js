@@ -24,7 +24,7 @@ let currentQuery = '';
 document.addEventListener('DOMContentLoaded', () => {
   validateInput();
   hideLoadMoreButton();
-  hideLoader();  
+  hideLoader();
 });
 
 inputSearch.addEventListener('input', validateInput);
@@ -34,13 +34,13 @@ formData.addEventListener('submit', async ev => {
 
   const searchQuery = inputSearch.value.trim();
 
- if (searchQuery !== currentQuery) {
-        currentPage = 1; 
-        totalHits = 0;  
-        clearGallery();
-        hideLoadMoreButton();
-    }
-    currentQuery = searchQuery;
+  if (searchQuery !== currentQuery) {
+    currentPage = 1;
+    totalHits = 0;
+    clearGallery();
+    hideLoadMoreButton();
+  }
+  currentQuery = searchQuery;
 
   if (!validateInput()) {
     iziToast.error({
@@ -48,27 +48,27 @@ formData.addEventListener('submit', async ev => {
       message: 'Будь ласка, введіть текст для пошуку.',
       position: 'topRight',
     });
-        hideLoadMoreButton();
+    hideLoadMoreButton();
     return;
   }
 
-    showLoader();
+  showLoader();
 
   try {
-     const responseData = await getImagesByQuery(currentQuery, currentPage);
+    const responseData = await getImagesByQuery(currentQuery, currentPage);
     const images = responseData.hits;
- totalHits = responseData.totalHits;
+    totalHits = responseData.totalHits;
 
     if (images.length === 0) {
       iziToast.info({
         title: 'Відхилено',
         message: 'За Вашим запитом зображень не знайдено.',
         position: 'topRight',
-      })
-       hideLoadMoreButton();
+      });
+      hideLoadMoreButton();
     } else {
-       createGallery(images);
-    updateLoadMoreButtonState();
+      createGallery(images);
+      updateLoadMoreButtonState();
     }
   } catch (error) {
     iziToast.error({
@@ -77,7 +77,7 @@ formData.addEventListener('submit', async ev => {
         'Під час завантаження зображень сталася помилка. Спробуйте ще раз.',
       position: 'topRight',
     });
-     clearGallery();
+    clearGallery();
     hideLoadMoreButton();
   } finally {
     hideLoader();
@@ -95,61 +95,58 @@ function validateInput() {
   }
 }
 
-
 loadMoreBtn.addEventListener('click', async () => {
-    currentPage++; 
-    showLoader();
-    hideLoadMoreButton(); 
+  currentPage++;
+  showLoader();
+  hideLoadMoreButton();
 
-    try {
-        const responseData = await getImagesByQuery(currentQuery, currentPage);
-        const images = responseData.hits;
-       
-        createGallery(images); 
-        updateLoadMoreButtonState();
-        smoothScrollToGallery(); 
+  try {
+    const responseData = await getImagesByQuery(currentQuery, currentPage);
+    const images = responseData.hits;
 
-    } catch (error) {
-        console.error('Помилка під час завантаження додаткових зображень:', error);
-        iziToast.error({
-            title: 'Помилка',
-            message: 'Під час завантаження додаткових зображень сталася помилка. Спробуйте ще раз.',
-            position: 'topRight',
-        });
-        hideLoadMoreButton();
-    } finally {
-        hideLoader();
-    }
+    createGallery(images);
+    updateLoadMoreButtonState();
+    smoothScrollToGallery();
+  } catch (error) {
+    iziToast.error({
+      title: 'Помилка',
+      message:
+        'Під час завантаження додаткових зображень сталася помилка. Спробуйте ще раз.',
+      position: 'topRight',
+    });
+    hideLoadMoreButton();
+  } finally {
+    hideLoader();
+  }
 });
 
 function updateLoadMoreButtonState() {
-    const totalPages = Math.ceil(totalHits / perPage);
+  const totalPages = Math.ceil(totalHits / perPage);
 
-   if (currentPage >= totalPages || totalHits === 0) {
-        hideLoadMoreButton(); 
+  if (currentPage >= totalPages || totalHits === 0) {
+    hideLoadMoreButton();
 
-        if (totalHits > 0) {
-            iziToast.info({
-                message: "We're sorry, but you've reached the end of search results.",
-                position: "bottomCenter",
-            });
-          }
-    } else {
-        showLoadMoreButton(); 
+    if (totalHits > 0) {
+      iziToast.info({
+        message: "We're sorry, but you've reached the end of search results.",
+        position: 'bottomCenter',
+      });
     }
+  } else {
+    showLoadMoreButton();
+  }
 }
 
 function smoothScrollToGallery() {
-    const galleryCard = gallery.firstElementChild; 
-     console.log('Gallery Card Element:', galleryCard);
-    if (galleryCard) {
- const cardRect = galleryCard.getBoundingClientRect();
- const cardHeight = cardRect.height;
-console.log('Card Height:', cardHeight);
- console.log('Attempting to scroll by:', cardHeight * 2);
-        window.scrollBy({
-            top: cardHeight * 2,
-            behavior: 'smooth',
-        });
-    }
+  const galleryCard = gallery.firstElementChild;
+
+  if (galleryCard) {
+    const cardRect = galleryCard.getBoundingClientRect();
+    const cardHeight = cardRect.height;
+
+    window.scrollBy({
+      top: cardHeight * 2,
+      behavior: 'smooth',
+    });
+  }
 }
